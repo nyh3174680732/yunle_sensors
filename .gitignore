@@ -1,0 +1,21 @@
+# ROS2编译文件 - 这些不应该上传
+build/
+install/
+log/
+
+# Python缓存
+*.pyc
+__pycache__/
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+
+# 系统文件
+.DS_Store
+*~
+*.bak
+
+# 日志文件
+*.log
