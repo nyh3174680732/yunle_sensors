@@ -317,6 +317,11 @@ else(ROS_EDITION STREQUAL "ROS2")
     EXECUTABLE ${PROJECT_NAME}_node
   )
 
+  # pointcloud converter target
+  ament_auto_add_executable(pointcloud_converter_node
+    src/pointcloud_converter.cpp
+  )
+
   if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     # the following line skips the linter which checks for copyrights
