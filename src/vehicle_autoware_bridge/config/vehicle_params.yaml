@@ -1,0 +1,63 @@
+# Vehicle-Autoware Bridge Configuration
+# 车辆参数配置文件
+
+# ========== Autoware to Chassis Converter Parameters ==========
+autoware_to_chassis_converter:
+  ros__parameters:
+    # Vehicle physical parameters
+    wheel_base: 0.501          # 车辆轴距 (meters)
+    track_width: 0.462         # 轮距 (meters)
+    wheel_diameter: 0.264      # 轮直径 (meters)
+
+    # Control limits
+    speed_limit: 5.0           # 最大速度限制 (m/s) - 约 18 km/h
+    max_steer_angle: 30.0      # 最大转向角限制 (degrees)
+    max_acceleration: 2.0      # 最大加速度 (m/s^2)
+    max_deceleration: 3.0      # 最大减速度 (m/s^2)
+
+    # Control thresholds
+    velocity_threshold: 0.1    # 速度阈值，低于此值视为静止 (m/s)
+    steer_threshold: 0.5       # 转向角阈值 (degrees)
+
+    # Safety parameters
+    watchdog_timeout: 0.5      # 控制命令超时时间 (seconds)
+    emergency_brake_enable: false  # 是否启用紧急制动
+
+# ========== GNSS to Autoware Converter Parameters ==========
+gnss_to_autoware_converter:
+  ros__parameters:
+    # GNSS origin (reference point for local coordinate system)
+    # 如果设置为 0.0, 将使用第一个有效 GPS 定位点作为原点
+    origin_latitude: 0.0       # 参考原点纬度 (degrees)
+    origin_longitude: 0.0      # 参考原点经度 (degrees)
+    origin_altitude: 0.0       # 参考原点海拔 (meters)
+
+    # Auto-set origin from first GPS fix
+    use_first_fix_as_origin: true  # 自动使用第一个 GPS 定位点作为原点
+
+    # Topic names
+    input_topic: "/sensing/gnss/navsatfix"
+    output_topic: "/sensing/gnss/pose_with_covariance"
+
+# ========== IMU Remapper Parameters ==========
+imu_remapper:
+  ros__parameters:
+    input_topic: "/imu/data"
+    output_topic: "/sensing/imu/tamagawa/imu_raw"
+    output_frame_id: "tamagawa/imu_link"
+
+# ========== Chassis to Autoware Converter Parameters ==========
+chassis_to_autoware_converter:
+  ros__parameters:
+    # Vehicle wheelbase for heading rate calculation
+    wheel_base: 0.462          # 轮距 (meters)
+
+    # Update rates
+    status_update_rate: 50.0   # 状态更新频率 (Hz)
+
+# ========== Additional Notes ==========
+# 1. 轴距 (wheel_base): 前后轮之间的距离
+# 2. 轮距 (track_width): 左右轮之间的距离
+# 3. 速度限制建议根据实际场景调整
+# 4. GPS 原点建议在第一次运行时记录，后续使用固定值以保证一致性
+# 5. 转向角限制应根据底盘实际物理限制设置
