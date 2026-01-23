@@ -42,13 +42,7 @@ def generate_launch_description():
         sensors_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource([
                 sensor_bringup_dir, '/launch/all_sensors_launch.py'
-            ]),
-            launch_arguments={
-                'gps_serial_port': '/dev/ttyACM0',
-                'gps_baudrate': '115200',
-                'imu_serial_port': '/dev/ttyUSB0',
-                'imu_baudrate': '921600',
-            }.items()
+            ])
         )
     except:
         print("Warning: sensor_bringup package not found, sensors will not be launched")
@@ -90,7 +84,7 @@ def generate_launch_description():
 
     # 注意：底盘驱动通常需要单独启动，因为它可能需要特殊权限
     # 如果需要自动启动，取消下面的注释
-    # if chassis_launch:
-    #     launch_items.append(chassis_launch)
+    if chassis_launch:
+        launch_items.append(chassis_launch)
 
     return LaunchDescription(launch_items)

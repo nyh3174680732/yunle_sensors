@@ -55,8 +55,6 @@ def generate_launch_description():
         remappings=[
             # Autoware 标准控制命令话题
             ('/control/command/control_cmd', '/control/command/control_cmd'),
-            # 底盘 ECU 命令话题
-            ('/ecu', '/ecu'),
         ]
     )
 
@@ -70,8 +68,6 @@ def generate_launch_description():
             {'use_sim_time': LaunchConfiguration('use_sim_time')}
         ],
         remappings=[
-            # 底盘状态话题
-            ('/vehicle_status', '/vehicle_status'),
             # Autoware 标准车辆状态话题
             ('/vehicle/status/control_mode', '/vehicle/status/control_mode'),
             ('/vehicle/status/gear_status', '/vehicle/status/gear_status'),
@@ -82,31 +78,31 @@ def generate_launch_description():
         ]
     )
 
-    # ============== 3. IMU 话题重映射 ==============
-    imu_remapper_node = Node(
-        package='vehicle_autoware_bridge',
-        executable='imu_remapper_node',
-        name='imu_remapper',
-        output='screen',
-        parameters=[
-            {
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
-                'input_topic': '/imu/data',
-                'output_topic': '/sensing/imu/tamagawa/imu_raw',
-                'output_frame_id': 'tamagawa/imu_link'
-            }
-        ]
-    )
+    # # ============== 3. 点云转换器配置 ==============
+    # pointcloud_to_autoware_converter_node = Node(
+    #     package='vehicle_autoware_bridge',
+    #     executable='pointcloud_to_autoware_converter_node',
+    #     name='pointcloud_to_autoware',
+    #     output='screen',
+    #     parameters=[{
+    #         'input_topic': '/livox/lidar',
+    #         'output_topic': '/sensing/lidar/top/pointcloud_raw_ex',
+    #         'output_frame_id': 'velodyne_top_base_link'
+    #     }]
+    # )
 
-    # ============== 4. GNSS 转换器 ==============
-    gnss_converter_node = Node(
+    # ============== 4. IMU to GNSS Orientation 转换器 ==============
+    # 将 IMU 姿态转换为 gnss_poser 需要的 GnssInsOrientationStamped 格式
+    imu_to_gnss_orientation_node = Node(
         package='vehicle_autoware_bridge',
-        executable='gnss_converter_node',
-        name='gnss_to_autoware_converter',
+        executable='imu_to_gnss_orientation_node',
+        name='imu_to_gnss_orientation',
         output='screen',
         parameters=[
-            config_file,
-            {'use_sim_time': LaunchConfiguration('use_sim_time')}
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+            {'input_topic': '/sensing/imu/tamagawa/imu_raw'},
+            {'output_topic': '/autoware_orientation'},
+            {'default_rmse_rotation': 0.1}
         ]
     )
 
@@ -129,9 +125,8 @@ def generate_launch_description():
         # 桥接节点
         autoware_to_chassis_node,
         chassis_to_autoware_node,
-        imu_remapper_node,
-        gnss_converter_node,
-
+        imu_to_gnss_orientation_node,
+        #pointcloud_to_autoware_converter_node
         # 传感器启动 (可选)
         # sensors_launch,  # 如果需要自动启动传感器，取消此注释
     ])

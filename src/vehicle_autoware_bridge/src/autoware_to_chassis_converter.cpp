@@ -36,7 +36,7 @@ public:
         );
 
         // Publisher to chassis ECU
-        ecu_pub_ = this->create_publisher<yunle_msgs::msg::Ecu>("/ecu", 10);
+        ecu_pub_ = this->create_publisher<yunle_msgs::msg::Ecu>("chassis/ecu", 10);
 
         // Watchdog timer - send stop command if no control received for 500ms
         watchdog_timer_ = this->create_wall_timer(
@@ -83,7 +83,7 @@ private:
                 msg->lateral.steering_tire_angle * 180.0f / M_PI, max_steer_angle_);
         }
 
-        ecu_msg.steer = steer_deg;
+        ecu_msg.steer = -steer_deg;
 
         // Determine gear based on velocity
         if (std::abs(velocity_ms) < velocity_threshold_) {

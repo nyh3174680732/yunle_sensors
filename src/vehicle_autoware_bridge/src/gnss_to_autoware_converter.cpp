@@ -101,7 +101,7 @@ private:
         // Create PoseWithCovarianceStamped message
         geometry_msgs::msg::PoseWithCovarianceStamped pose_msg;
         pose_msg.header = msg->header;
-        pose_msg.header.frame_id = "map";  // Use "map" frame for global reference
+        pose_msg.header.frame_id = "gnss_link";  // Use "map" frame for global reference
 
         // Set position (ENU coordinates)
         pose_msg.pose.pose.position.x = east;

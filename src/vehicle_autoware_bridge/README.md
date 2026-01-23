@@ -28,12 +28,6 @@
   - `/vehicle/status/hazard_lights_status` (HazardLightsReport)
   - `/vehicle/status/turn_indicators_status` (TurnIndicatorsReport)
 
-### 3. 传感器接口
-- **IMU**: 重映射 `/imu/data` → `/sensing/imu/tamagawa/imu_raw`
-- **GNSS**: 转换 GPS 经纬度 → 本地 ENU 坐标系位姿
-  - 输入: `/sensing/gnss/navsatfix` (NavSatFix)
-  - 输出: `/sensing/gnss/pose_with_covariance` (PoseWithCovarianceStamped)
-- **激光雷达**: 直接使用 Livox 点云转换器输出的 `/sensing/lidar/top/pointcloud_raw_ex`
 
 ## 系统架构
 

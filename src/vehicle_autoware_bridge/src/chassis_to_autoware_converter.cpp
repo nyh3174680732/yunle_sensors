@@ -29,7 +29,7 @@ public:
     {
         // Subscriber to chassis vehicle status
         vehicle_status_sub_ = this->create_subscription<yunle_msgs::msg::VehicleStatus>(
-            "/vehicle_status",
+            "chassis/vehicle_status",
             10,
             std::bind(&ChassisToAutowareConverter::vehicleStatusCallback, this, std::placeholders::_1)
         );
@@ -77,14 +77,14 @@ private:
         // YunLe: 1=D, 2=N, 3=R
         // Autoware: 1=PARK, 2=REVERSE, 20=NEUTRAL, 22=DRIVE, others=LOW/HIGH
         switch (msg->shift_level) {
-            case 1:  // Drive
-                gear_msg.report = 22;  // DRIVE
+            case 1:  // Drive 前进
+                gear_msg.report = 22;  // DRIVE正常行驶
                 break;
-            case 2:  // Neutral
-                gear_msg.report = 20;  // NEUTRAL
+            case 2:  // Neutral 停止
+                gear_msg.report = 20;  // NEUTRAL 空档
                 break;
-            case 3:  // Reverse
-                gear_msg.report = 2;   // REVERSE
+            case 3:  // Reverse 后退
+                gear_msg.report = 2;   // REVERSE 倒档
                 break;
             default:
                 gear_msg.report = 20;  // NEUTRAL as default

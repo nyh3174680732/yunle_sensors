@@ -23,6 +23,17 @@ autoware_to_chassis_converter:
     watchdog_timeout: 0.5      # 控制命令超时时间 (seconds)
     emergency_brake_enable: false  # 是否启用紧急制动
 
+
+# ========== Chassis to Autoware Converter Parameters ==========
+chassis_to_autoware_converter:
+  ros__parameters:
+    # Vehicle wheelbase for heading rate calculation
+    wheel_base: 0.462          # 轮距 (meters)
+
+    # Update rates
+    status_update_rate: 50.0   # 状态更新频率 (Hz)
+
+
 # ========== GNSS to Autoware Converter Parameters ==========
 gnss_to_autoware_converter:
   ros__parameters:
@@ -39,21 +50,6 @@ gnss_to_autoware_converter:
     input_topic: "/sensing/gnss/navsatfix"
     output_topic: "/sensing/gnss/pose_with_covariance"
 
-# ========== IMU Remapper Parameters ==========
-imu_remapper:
-  ros__parameters:
-    input_topic: "/imu/data"
-    output_topic: "/sensing/imu/tamagawa/imu_raw"
-    output_frame_id: "tamagawa/imu_link"
-
-# ========== Chassis to Autoware Converter Parameters ==========
-chassis_to_autoware_converter:
-  ros__parameters:
-    # Vehicle wheelbase for heading rate calculation
-    wheel_base: 0.462          # 轮距 (meters)
-
-    # Update rates
-    status_update_rate: 50.0   # 状态更新频率 (Hz)
 
 # ========== Additional Notes ==========
 # 1. 轴距 (wheel_base): 前后轮之间的距离

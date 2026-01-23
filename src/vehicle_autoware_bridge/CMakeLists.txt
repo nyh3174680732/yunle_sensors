@@ -14,6 +14,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(autoware_control_msgs REQUIRED)
 find_package(autoware_vehicle_msgs REQUIRED)
+find_package(autoware_sensing_msgs REQUIRED)
 
 # Find yunle_msgs (custom chassis messages)
 # If yunle_msgs is not available, the nodes will fail to compile
@@ -58,31 +59,43 @@ target_include_directories(chassis_to_autoware_node PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-# ========== 3. IMU Topic Remapper ==========
-add_executable(imu_remapper_node
-  src/imu_remapper.cpp
-)
-ament_target_dependencies(imu_remapper_node
-  rclcpp
-  sensor_msgs
-)
 
-# ========== 4. GNSS Converter ==========
-add_executable(gnss_converter_node
+# ========== 3. GNSS Converter ==========
+add_executable(gnss_to_local_node
   src/gnss_to_autoware_converter.cpp
 )
-ament_target_dependencies(gnss_converter_node
+ament_target_dependencies(gnss_to_local_node
   rclcpp
   sensor_msgs
   geometry_msgs
+)
+
+# ========== 4. IMU to GNSS Orientation Converter ==========
+add_executable(imu_to_gnss_orientation_node
+  src/imu_to_gnss_orientation.cpp
+)
+ament_target_dependencies(imu_to_gnss_orientation_node
+  rclcpp
+  sensor_msgs
+  autoware_sensing_msgs
+)
+
+# ========== 5. Pointcloud to Autoware Converter ==========
+add_executable(pointcloud_to_autoware_converter_node
+  src/pointcloud_to_autoware_converter.cpp
+)
+ament_target_dependencies(pointcloud_to_autoware_converter_node
+  rclcpp
+  sensor_msgs
 )
 
 # Install executables
 install(TARGETS
   autoware_to_chassis_node
   chassis_to_autoware_node
-  imu_remapper_node
-  gnss_converter_node
+  gnss_to_local_node
+  imu_to_gnss_orientation_node
+  pointcloud_to_autoware_converter_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

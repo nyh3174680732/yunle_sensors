@@ -15,7 +15,7 @@
   <!-- Launch dependencies -->
   <exec_depend>livox_ros_driver2</exec_depend>
   <exec_depend>fdilink_ahrs</exec_depend>
-  <exec_depend>gnss_converter</exec_depend>
+  <exec_depend>gnss</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -155,12 +155,9 @@ bool LockController::sendCommand(const std::vector<uint8_t>& command, std::vecto
 
       // 检查是否收到完整响应 (至少5个字节)
       if (response.size() >= 5) {
-        // 忽略82开头的主动反馈，只接受8A或80开头的被动反馈
-        if (response[0] == 0x8A || response[0] == 0x80 || response[0] == 0x90) {
+        // 接受所有有效的响应格式：8A(解锁响应)、80(查询响应)、90(批量解锁响应)、82(主动反馈)
+        if (response[0] == 0x8A || response[0] == 0x80 || response[0] == 0x90 || response[0] == 0x82) {
           return true;
-        } else if (response[0] == 0x82) {
-          // 忽略主动反馈，继续等待
-          response.clear();
         }
       }
     }
@@ -242,7 +239,8 @@ bool LockController::parseUnlockResponse(const std::vector<uint8_t>& response, b
     return false;
   }
 
-  if (response[0] != 0x8A) {
+  // 接受 0x8A (被动响应) 或 0x82 (主动反馈) 格式
+  if (response[0] != 0x8A && response[0] != 0x82) {
     return false;
   }
 
