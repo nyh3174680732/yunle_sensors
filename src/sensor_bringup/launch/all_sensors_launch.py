@@ -25,6 +25,7 @@ def generate_launch_description():
     6. 点云格式转换器 (旧版, 已注释)
     7. IMU/AHRS 驱动
     8. GPS 转换节点
+    9. NavSatFix 转 Odometry 节点 (for LIO-SAM)
     """
 
     # ============== 声明启动参数 ==============
@@ -44,7 +45,7 @@ def generate_launch_description():
     # IMU 串口参数
     imu_serial_port_arg = DeclareLaunchArgument(
         'imu_serial_port',
-        default_value='/dev/ttyUSB1',
+        default_value='/dev/ttyUSB0',
         description='Serial port for IMU/AHRS'
     )
     imu_baudrate_arg = DeclareLaunchArgument(
@@ -286,6 +287,30 @@ def generate_launch_description():
         }]
     )
 
+    # ============== 9. NavSatFix 转 Odometry (for LIO-SAM) ==============
+    navsat_transform_node = Node(
+        package='robot_localization',
+        executable='navsat_transform_node',
+        name='navsat_transform',
+        output='screen',
+        parameters=[{
+            'magnetic_declination_radians': 0.0,
+            'yaw_offset': 0.0,
+            'zero_altitude': False,
+            'broadcast_cartesian_transform': True,
+            'broadcast_utm_transform_as_parent_frame': False,
+            'publish_filtered_gps': True,
+            'use_odometry_yaw': False,
+            'wait_for_datum': False,
+            'frequency': 10.0,
+        }],
+        remappings=[
+            ('imu', '/sensing/imu/tamagawa/imu_raw'),
+            ('gps/fix', '/sensing/gnss/navsatfix'),
+            ('odometry/gps', '/odometry/gps'),
+        ]
+    )
+
     # ============== 构建 Launch Description ==============
     return LaunchDescription([
         # 声明参数
@@ -314,4 +339,5 @@ def generate_launch_description():
         static_tf_right_node,
         imu_driver_node,
         gnss_driver_node,
+        #navsat_transform_node,
     ])

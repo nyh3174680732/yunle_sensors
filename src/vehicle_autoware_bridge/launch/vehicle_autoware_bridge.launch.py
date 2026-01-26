@@ -125,7 +125,7 @@ def generate_launch_description():
         # 桥接节点
         autoware_to_chassis_node,
         chassis_to_autoware_node,
-        imu_to_gnss_orientation_node,
+        #imu_to_gnss_orientation_node,
         #pointcloud_to_autoware_converter_node
         # 传感器启动 (可选)
         # sensors_launch,  # 如果需要自动启动传感器，取消此注释
